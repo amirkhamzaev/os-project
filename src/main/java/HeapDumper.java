@@ -36,9 +36,8 @@ public class HeapDumper {
     private static HotSpotDiagnosticMXBean getHotspotMBean() {
         try {
             MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-            HotSpotDiagnosticMXBean bean = ManagementFactory.newPlatformMXBeanProxy(server,
+            return ManagementFactory.newPlatformMXBeanProxy(server,
                             HOTSPOT_BEAN_NAME, HotSpotDiagnosticMXBean.class);
-            return bean;
         } catch (RuntimeException re) {
             throw re;
         } catch (Exception exp) {

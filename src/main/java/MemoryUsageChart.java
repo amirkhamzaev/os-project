@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 
@@ -24,7 +25,7 @@ public class MemoryUsageChart extends BorderPane {
     private static final long MAX_MILLI = 120_000;
 
     private static final int X_AXIS_TICK_UNIT = 10_000;
-    private static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     private final long startCounter;
     private final long initialUpperBound;
@@ -32,8 +33,8 @@ public class MemoryUsageChart extends BorderPane {
     private XYChart.Series<Number, Number> maxMemorySeries;
     private XYChart.Series<Number, Number> usageSeries;
     private NumberAxis xAxis;
-    private String title;
-    private Supplier<MemoryUsage> memoryUsageSupplier;
+    private final String title;
+    private final Supplier<MemoryUsage> memoryUsageSupplier;
     private long counter;
 
 
@@ -56,12 +57,12 @@ public class MemoryUsageChart extends BorderPane {
         long used =  memoryUsage.getUsed() / KB_CONVERSION ;
         long max = memoryUsage.getMax() / KB_CONVERSION;
         xAxis = new NumberAxis(startCounter, initialUpperBound, X_AXIS_TICK_UNIT);
-        double tickSize = max / Y_AXIS_TICK_COUNT;
+        double tickSize = (double) max / Y_AXIS_TICK_COUNT;
         double rounding = 10d;
         yAxis = new NumberAxis(0, Math.max(max,used) , Math.round(tickSize / rounding) * rounding);
         AreaChart<Number, Number> chart = new AreaChart<>(xAxis, yAxis);
         // setup chart
-        final String stockLineChartCss = getClass().getResource(MEMORY_USAGE_CHART_CSS).toExternalForm();
+        final String stockLineChartCss = Objects.requireNonNull(getClass().getResource(MEMORY_USAGE_CHART_CSS)).toExternalForm();
         chart.getStylesheets().add(stockLineChartCss);
         chart.setCreateSymbols(false);
         chart.setAnimated(false);
@@ -116,7 +117,7 @@ public class MemoryUsageChart extends BorderPane {
         final ObservableList<XYChart.Data<Number, Number>> maxHeapSizeList = maxMemorySeries.getData();
         usedHeapSizeList.add(new XYChart.Data<>(counter, used));
         maxHeapSizeList.add(new XYChart.Data<>(counter,max));
-        // if we go over upperboud, delete old data, and change the bounds
+        // if we go over upperbound, delete old data, and change the bounds
         if (counter > initialUpperBound) {
             XYChart.Data<Number, Number> numberNumberData = usedHeapSizeList.get(1);
             Number secondValue = numberNumberData.getXValue();
