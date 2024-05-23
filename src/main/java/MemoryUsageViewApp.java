@@ -3,18 +3,18 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class MemoryUsageViewApp extends Application{
+public class MemoryUsageViewApp extends Application {
 
     private MemoryViewPane memoryViewPane;
 
-    private Pane createContent(){
+    private Pane createContent() {
         memoryViewPane = new MemoryViewPane();
         return memoryViewPane;
     }
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setScene(new Scene(createContent(),600, 600));
+        primaryStage.setScene(new Scene(createContent(), 600, 600));
         primaryStage.show();
         primaryStage.setTitle("Memory Usage");
         memoryViewPane.startUpdates();

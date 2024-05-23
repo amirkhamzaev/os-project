@@ -41,7 +41,7 @@ public class MemoryUsageChart extends BorderPane {
     private boolean firstUpdateCall = true;
     private NumberAxis yAxis;
 
-    public MemoryUsageChart(String title,  Supplier<MemoryUsage> memoryUsageSupplier, long startCounter){
+    public MemoryUsageChart(String title, Supplier<MemoryUsage> memoryUsageSupplier, long startCounter) {
         this.title = title;
         this.memoryUsageSupplier = memoryUsageSupplier;
         this.counter = startCounter;
@@ -54,12 +54,12 @@ public class MemoryUsageChart extends BorderPane {
 
     private Parent createContent() {
         MemoryUsage memoryUsage = memoryUsageSupplier.get();
-        long used =  memoryUsage.getUsed() / KB_CONVERSION ;
+        long used = memoryUsage.getUsed() / KB_CONVERSION;
         long max = memoryUsage.getMax() / KB_CONVERSION;
         xAxis = new NumberAxis(startCounter, initialUpperBound, X_AXIS_TICK_UNIT);
         double tickSize = (double) max / Y_AXIS_TICK_COUNT;
         double rounding = 10d;
-        yAxis = new NumberAxis(0, Math.max(max,used) , Math.round(tickSize / rounding) * rounding);
+        yAxis = new NumberAxis(0, Math.max(max, used), Math.round(tickSize / rounding) * rounding);
         AreaChart<Number, Number> chart = new AreaChart<>(xAxis, yAxis);
         // setup chart
         final String stockLineChartCss = Objects.requireNonNull(getClass().getResource(MEMORY_USAGE_CHART_CSS)).toExternalForm();
@@ -75,8 +75,7 @@ public class MemoryUsageChart extends BorderPane {
             @Override
             public String toString(Number object) {
                 long millis = object.longValue();
-                LocalDateTime date =
-                        LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
+                LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
                 return date.format(FORMATTER);
             }
 
@@ -104,19 +103,19 @@ public class MemoryUsageChart extends BorderPane {
 
     private void updateMemoryUsage() {
         MemoryUsage memoryUsage = memoryUsageSupplier.get();
-        long used =  memoryUsage.getUsed() / KB_CONVERSION ;
-        long max =  memoryUsage.getMax() / KB_CONVERSION ;
+        long used = memoryUsage.getUsed() / KB_CONVERSION;
+        long max = memoryUsage.getMax() / KB_CONVERSION;
         counter = System.currentTimeMillis();
-        if (firstUpdateCall){
+        if (firstUpdateCall) {
             xAxis.setLowerBound(counter);
             firstUpdateCall = false;
         }
-        yAxis.setUpperBound(Math.max(used,max));
+        yAxis.setUpperBound(Math.max(used, max));
 
         final ObservableList<XYChart.Data<Number, Number>> usedHeapSizeList = usageSeries.getData();
         final ObservableList<XYChart.Data<Number, Number>> maxHeapSizeList = maxMemorySeries.getData();
         usedHeapSizeList.add(new XYChart.Data<>(counter, used));
-        maxHeapSizeList.add(new XYChart.Data<>(counter,max));
+        maxHeapSizeList.add(new XYChart.Data<>(counter, max));
         // if we go over upperbound, delete old data, and change the bounds
         if (counter > initialUpperBound) {
             XYChart.Data<Number, Number> numberNumberData = usedHeapSizeList.get(1);

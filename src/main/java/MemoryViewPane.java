@@ -56,9 +56,7 @@ public class MemoryViewPane extends BorderPane {
         ScrollPane scrollPane = new ScrollPane(box);
         scrollPane.setFitToWidth(true);
         setCenter(scrollPane);
-        final KeyFrame frame =
-                new KeyFrame(javafx.util.Duration.millis(1_000),
-                        (ActionEvent actionEvent) -> updateHeapInformation());
+        final KeyFrame frame = new KeyFrame(javafx.util.Duration.millis(1_000), (ActionEvent actionEvent) -> updateHeapInformation());
         animation = new Timeline();
         animation.getKeyFrames().add(frame);
         animation.setCycleCount(Animation.INDEFINITE);
@@ -104,37 +102,37 @@ public class MemoryViewPane extends BorderPane {
         updateGCStats();
     }
 
-    private void updateGCStats(){
+    private void updateGCStats() {
         RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
         long mbeanUptime = rb.getUptime();
         String formattedUptime = formatTimeDifference(mbeanUptime);
         uptTime.setValue(formattedUptime);
 
         long garbageCollectionTime = 0;
-        List<String> gcCollections=new ArrayList<>();
+        List<String> gcCollections = new ArrayList<>();
         for (GarbageCollectorMXBean gc : ManagementFactory.getGarbageCollectorMXBeans()) {
-            gcCollections.add(gc.getName()+"="+gc.getCollectionCount());
+            gcCollections.add(gc.getName() + "=" + gc.getCollectionCount());
             garbageCollectionTime += gc.getCollectionTime();
         }
         String formattedGCTime = formatTimeDifference(garbageCollectionTime);
-        gcCollectionCount.setValue(String.join(", ",gcCollections));
+        gcCollectionCount.setValue(String.join(", ", gcCollections));
         gcCollectionTime.setValue(formattedGCTime);
 
     }
 
 
     private static String formatByteSize(long bytes) {
-        int unit =  1000;
+        int unit = 1000;
         if (bytes < unit) {
             return bytes + " B";
         }
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = Character.toString("kMGTPE".charAt(exp-1)) ;
+        String pre = Character.toString("kMGTPE".charAt(exp - 1));
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
 
-    private String formatTimeDifference(long durationInMilli){
+    private String formatTimeDifference(long durationInMilli) {
         long secondsInMilli = 1_000;
         long minutesInMilli = secondsInMilli * 60;
         long hoursInMilli = minutesInMilli * 60;
@@ -165,7 +163,7 @@ public class MemoryViewPane extends BorderPane {
         return borderPane;
     }
 
-    private Pane createRightPane(){
+    private Pane createRightPane() {
         VBox vBox = new VBox();
         vBox.setSpacing(5);
         ObservableList<Node> children = vBox.getChildren();
